@@ -36,14 +36,14 @@ Messages (iMessage or SMS) and attachments are stored in `~/Library/Messages` on
 > On macOS, your terminal application needs access to `~/Library` in order to read `chat.db`. Add the application to *System Preferences* > *Privacy & Security* > *Full Disk Access*.
 
 ```
-usage: cli.py [-h] [-f [DATABASE]] [-e [EXPORT]] [-s [START]] [-u [END]] [-l [LIMIT]] [-r [RECIPIENT]] [-t [SENDER]] [-v]
+usage: imsg [-h] [-f [DATABASE]] [-e [EXPORT]] [-s [START]] [-u [END]] [-l [LIMIT]] [-r [RECIPIENT]] [-t [SENDER]] [-v]
 
 options:
   -h, --help            show this help message and exit
   -f [DATABASE], --database [DATABASE]
                         path to chat.db, default to ~/Library/Messages/chat.db
   -e [EXPORT], --export [EXPORT]
-                        export to file with format (one of: 'e', 'excel', 's', 'sqlite', 'sqlite3')
+                        export to file with format (one of: 'c', 'csv', 's', 'sqlite')
   -s [START], --start [START]
                         start date, one of formats: 'YYYY-MM-DD HH:MM:SS', 'YYYY-MM-DD'
   -u [END], --end [END]
