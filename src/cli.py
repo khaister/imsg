@@ -12,9 +12,8 @@ from src import data_access, export_excel, export_sqlite, version
 MACOS_DB_PATH = expanduser("~") + "/Library/Messages/chat.db"
 
 
-def get_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="A tool for reading iMessage data")
-
+def get_parser():
+    parser = argparse.ArgumentParser()
     parser.add_argument(
         "-f",
         "--database",
@@ -24,7 +23,6 @@ def get_parser() -> argparse.ArgumentParser:
         default=MACOS_DB_PATH,
         help="path to chat.db, default to ~/Library/Messages/chat.db",
     )
-
     parser.add_argument(
         "-e",
         "--export",
@@ -32,25 +30,59 @@ def get_parser() -> argparse.ArgumentParser:
         default=None,
         help="export to file with format (one of: 'e', 'excel', 's', 'sqlite', 'sqlite3')",
     )
-
+    parser.add_argument(
+        "-s",
+        "--start",
+        nargs="?",
+        default=None,
+        help="start date, one of formats: 'YYYY-MM-DD HH:MM:SS', 'YYYY-MM-DD'",
+    )
+    parser.add_argument(
+        "-u",
+        "--end",
+        nargs="?",
+        default=None,
+        help="end date, one of formats: 'YYYY-MM-DD HH:MM:SS', 'YYYY-MM-DD'",
+    )
+    parser.add_argument(
+        "-l",
+        "--limit",
+        nargs="?",
+        default=None,
+        type=int,
+        help="limit number of messages to read",
+    )
+    parser.add_argument(
+        "-r", "--recipient", nargs="?", default=None, help="filter by recipient"
+    )
+    parser.add_argument(
+        "-t", "--sender", nargs="?", default=None, help="filter by sender"
+    )
     parser.add_argument("-v", "--version", help="show version", action="store_true")
 
     return parser
 
 
-def check(chat_db: str):
-    if chat_db != MACOS_DB_PATH and os.path.isdir(chat_db):
-        chat_db += "/chat.db"
+def check(database: str):
+    if database != MACOS_DB_PATH and os.path.isdir(database):
+        database += "/chat.db"
 
-    if not os.path.isfile(chat_db):
-        sys.exit(f"{chat_db} is invalid")
+    if not os.path.isfile(database):
+        sys.exit(f"{database} is invalid")
 
-    return chat_db
+    return database
 
 
-def evaluate(database: str, output: str):
-    fetched_data = data_access.DataAccess(database).fetch()
+def evaluate(database: str, options):
+    fetched_data = data_access.DataAccess(database).fetch(
+        start=options.start,
+        end=options.end,
+        limit=options.limit,
+        sender=options.sender,
+        recipient=options.recipient,
+    )
 
+    output = options.export
     if output in ["e", "excel"]:
         file_path = expanduser("~") + "/Documents/"
         filename = export_excel.ExcelExporter(data, file_path).export()
@@ -76,7 +108,7 @@ def main():
     database = check(args.database)
     print(f"Reading {database}\n")
 
-    evaluate(database, args.export)
+    evaluate(database, args)
 
 
 if __name__ == "__main__":

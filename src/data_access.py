@@ -12,34 +12,25 @@ logging.basicConfig(level=logging.INFO)
 
 # noinspection PyMethodMayBeStatic
 class DataAccess:
-    _QUERY = (
-        "SELECT "
-        "text, "
-        "datetime((date / 1000000000) + 978307200, 'unixepoch', 'localtime'),"
-        "handle.id, "
-        "handle.service, "
-        "message.destination_caller_id, "
-        "message.is_from_me, "
-        "message.attributedBody, "
-        "message.cache_has_attachments "
-        "FROM message "
-        "JOIN handle on message.handle_id=handle.ROWID "
-        " WHERE datetime((date / 1000000000) + 978307200, 'unixepoch', 'localtime') > '2024-05-11'"
-    )
+    _QUERY = """
+    SELECT
+        m.text,
+        datetime((m.date / 1000000000) + 978307200, 'unixepoch', 'localtime'),
+        h.id,
+        h.service,
+        m.destination_caller_id,
+        m.is_from_me,
+        m.attributedBody,
+        m.cache_has_attachments
+    FROM message m
+    JOIN handle h ON m.handle_id = h.ROWID
+    """
 
     def __init__(self, database: str):
         self._database = database
         self._os = platform_finder.get_platform()
 
-    def fetch(self) -> list[message.Message] | None:
-        self._check_supported_os()
-        return self._read_database()
-
-    def _check_supported_os(self):
-        if self._os == "WINDOWS":
-            sys.exit(f"{platform_finder.get_platform()} is not supported")
-
-    def _do_fetch(self, command: str) -> list:
+    def execute(self, command: str) -> list:
         try:
             conn = sqlite3.connect(self._database)
             cur = conn.cursor()
@@ -48,9 +39,51 @@ class DataAccess:
         except Exception as e:
             sys.exit(f"Error reading the database: {e}")
 
-    def _read_database(self) -> list[message.Message]:
+    def fetch(
+        self,
+        start: str = None,
+        end: str = None,
+        limit: int = None,
+        sender: str = None,
+        recipient: str = None,
+    ) -> list[message.Message] | None:
+        query = self._build_query(start, end, limit, sender, recipient)
+        return self._do_fetch(query)
+
+    def _build_query(self, start, end, limit, sender, recipient):
+        query = self._QUERY
+
+        where = ""
+        clauses = []
+
+        if start:
+            clauses.append(
+                f"datetime((m.date / 1000000000) + 978307200, 'unixepoch', 'localtime') > '{start}'"
+            )
+
+        if end:
+            clauses.append(
+                f"datetime((m.date / 1000000000) + 978307200, 'unixepoch', 'localtime') < '{end}'"
+            )
+
+        if sender:
+            clauses.append(f"h.id = '{sender}'")
+
+        if recipient:
+            clauses.append(f"m.destination_caller_id = '{recipient}'")
+
+        if clauses:
+            where += " WHERE "
+            where += " AND ".join(clauses)
+
+        if limit:
+            where += f" LIMIT {limit}"
+
+        return query + where
+
+    def _do_fetch(self, query: str) -> list[message.Message]:
         data = []
-        for row in self._do_fetch(self._QUERY):
+        for row in self.execute(query):
             content = self._parse_content(row)
             data.append(
                 message.Message(

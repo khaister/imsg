@@ -77,7 +77,7 @@ def test_message_data(message_data_one_row):
 
 def test_db_data(initialize_db):
     sql_command = "SELECT user_id, text, date, service, account, is_from_me, attributedBody, cache_has_attachments from message"
-    rval = data_access.DataAccess(initialize_db)._do_fetch(sql_command)
+    rval = data_access.DataAccess(initialize_db).execute(sql_command)
     assert isinstance(rval, list)
     assert isinstance(rval[0][0], str)
     assert isinstance(rval[0][1], str)
