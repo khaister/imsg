@@ -4,8 +4,8 @@
 import pytest
 import os
 import sqlite3
-from imessage_reader import data_access, platform_finder
-from imessage_reader.message import Message
+from src import data_access
+from src.message import Message
 
 
 @pytest.fixture()

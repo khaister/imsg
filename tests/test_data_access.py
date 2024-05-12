@@ -3,7 +3,7 @@
 import os
 import sqlite3
 import pytest
-from imessage_reader import data_access
+from src import data_access
 
 
 data = data_access.DataAccess("/Users/bodo/Documents")
@@ -11,7 +11,7 @@ data = data_access.DataAccess("/Users/bodo/Documents")
 
 def test_fetch_data(mocker):
     mocker.patch(
-        "imessage_reader.data_access.DataAccess.__init__",
+        "src.data_access.DataAccess.__init__",
         db_path="/Users/bodo/Documents",
         system=None,
     )

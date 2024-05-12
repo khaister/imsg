@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from imessage_reader import cli
+from src import cli
 
 
 @pytest.fixture()

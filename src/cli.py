@@ -6,7 +6,7 @@ import os
 import sys
 from os.path import expanduser
 
-from imessage_reader import data_access, export_excel, export_sqlite, info
+from src import data_access, export_excel, export_sqlite, info
 
 # Path to the chat.db file on macOS
 # Note: This path is used if the user does not specify a path.

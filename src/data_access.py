@@ -5,7 +5,7 @@ import sqlite3
 import sys
 from os.path import expanduser
 
-from imessage_reader import export_excel, export_sqlite, message, platform_finder
+from src import message, platform_finder
 
 logging.basicConfig(level=logging.INFO)
 

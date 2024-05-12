@@ -3,7 +3,7 @@
 
 import pytest
 import platform
-from imessage_reader import platform_finder
+from src import platform_finder
 
 
 @pytest.fixture(scope="function")
