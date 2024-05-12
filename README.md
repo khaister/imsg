@@ -12,7 +12,7 @@ The following information is currently being read from the database:
 * service (iMessage or SMS)
 * whether the message was sent by the iMessage account holder
 
-## Overview
+## iMessage data
 
 Messages (iMessage or SMS) and attachments are stored in `~/Library/Messages` on macOS. This directory contains a `chat.db` file, which is a SQLite3 database with two interesting tables: `handle` and `message`.
 
@@ -34,13 +34,10 @@ Messages (iMessage or SMS) and attachments are stored in `~/Library/Messages` on
 ### CLI
 
 > [!note]
-> On **macOS** you need access to the *Library* folder in order to read `chat.db`. You can add access (for *Terminal* or *iTerm*) in
-> System Preferences > Privacy & Security > Full Disk Access
+> On macOS, your terminal application needs access to `~/Library` in order to read `chat.db`. Add the application to *System Preferences* > *Privacy & Security* > *Full Disk Access*.
 
-```sh
-usage: imsg [-h] [-f [DATABASE]] [-e [EXPORT]] [-v]
-
-A tool for reading iMessage data
+```
+usage: cli.py [-h] [-f [DATABASE]] [-e [EXPORT]] [-s [START]] [-u [END]] [-l [LIMIT]] [-r [RECIPIENT]] [-t [SENDER]] [-v]
 
 options:
   -h, --help            show this help message and exit
@@ -48,6 +45,16 @@ options:
                         path to chat.db, default to ~/Library/Messages/chat.db
   -e [EXPORT], --export [EXPORT]
                         export to file with format (one of: 'e', 'excel', 's', 'sqlite', 'sqlite3')
+  -s [START], --start [START]
+                        start date, one of formats: 'YYYY-MM-DD HH:MM:SS', 'YYYY-MM-DD'
+  -u [END], --end [END]
+                        end date, one of formats: 'YYYY-MM-DD HH:MM:SS', 'YYYY-MM-DD'
+  -l [LIMIT], --limit [LIMIT]
+                        limit number of messages to read
+  -r [RECIPIENT], --recipient [RECIPIENT]
+                        filter by recipient
+  -t [SENDER], --sender [SENDER]
+                        filter by sender
   -v, --version         show version
 ```
 
