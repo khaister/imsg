@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "imsg"
+version = "0.1.0"
+description = ""
+authors = ["Khai Nguyen <1192669+khaister@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+openpyxl = "^3.1.2"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+pytest-mock = "^3.14.0"
+pytest-cov = "^5.0.0"
+ruff = "^0.4.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
