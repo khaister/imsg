@@ -84,10 +84,10 @@ class FetchData:
                     # this is equivalent to text[0:1] == b'\x81'
                     if text[0] == 129:
                         length = int.from_bytes(text[1:3], "little")
-                        text = text[3: length + 3]
+                        text = text[3 : length + 3]
                     else:
                         length = text[0]
-                        text = text[1: length + 1]
+                        text = text[1 : length + 1]
                     text = text.decode()
 
                     logging.debug(text)

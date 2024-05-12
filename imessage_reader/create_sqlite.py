@@ -12,8 +12,7 @@ import sqlite3
 
 
 class CreateDatabase:
-    """This class manages the export to SQLite.
-    """
+    """This class manages the export to SQLite."""
 
     def __init__(self, imessage_data: list, file_path: str):
         """Constructor method

@@ -14,8 +14,7 @@ from openpyxl.styles import Font
 
 
 class ExelWriter:
-    """This class manages the export to excel.
-    """
+    """This class manages the export to excel."""
 
     def __init__(self, imessage_data: list, file_path: str):
         """Constructor method
@@ -116,7 +115,8 @@ class ExelWriter:
         # Save the workbook (Excel file)
         try:
             workbook.save(
-                self.file_path + f'iMessage-Data_{datetime.now().strftime("%Y-%m-%d")}.xlsx'
+                self.file_path
+                + f'iMessage-Data_{datetime.now().strftime("%Y-%m-%d")}.xlsx'
             )
             print()
             print(">>> Excel file successfully created! <<<")

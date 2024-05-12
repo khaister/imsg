@@ -17,8 +17,7 @@ VERSION = "0.6.1"
 
 
 class Platform(Enum):
-    """An enum used to indicate the running operating system
-    """
+    """An enum used to indicate the running operating system"""
 
     OTHER = 0
     LINUX = 1
