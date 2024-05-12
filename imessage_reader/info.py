@@ -7,9 +7,9 @@ Date created: June 14th, 2020
 Date modified: February 22nd, 2022
 """
 
-from imessage_reader import common
+from imessage_reader import platform_finder
 
-VERSION = common.VERSION
+VERSION = platform_finder.VERSION
 
 
 def app_info():

@@ -11,7 +11,7 @@ Date modified: August 28th, 2021
 import sqlite3
 
 
-class CreateDatabase:
+class SqliteExporter:
     """This class manages the export to SQLite."""
 
     def __init__(self, imessage_data: list, file_path: str):
@@ -41,7 +41,7 @@ class CreateDatabase:
         message TEXT,
         date TEXT,
         service TEXT,
-        destination_caller_id TEXT, 
+        destination_caller_id TEXT,
         is_from_me TEXT)"""
         )
 

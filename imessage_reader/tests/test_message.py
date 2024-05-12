@@ -4,13 +4,13 @@
 import pytest
 import os
 import sqlite3
-from imessage_reader import common
-from imessage_reader.data_container import MessageData
+from imessage_reader import data_access, platform_finder
+from imessage_reader.message import Message
 
 
 @pytest.fixture()
 def message_data_one_row():
-    return MessageData(
+    return Message(
         "max.mustermann@icloud.com",
         "Hello!",
         "2020-10-27 17:19:20",
@@ -77,7 +77,7 @@ def test_message_data(message_data_one_row):
 
 def test_db_data(initialize_db):
     sql_command = "SELECT user_id, text, date, service, account, is_from_me, attributedBody, cache_has_attachments from message"
-    rval = common.fetch_db_data(initialize_db, sql_command)
+    rval = data_access.fetch_db_data(initialize_db, sql_command)
     assert isinstance(rval, list)
     assert isinstance(rval[0][0], str)
     assert isinstance(rval[0][1], str)

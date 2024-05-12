@@ -9,26 +9,40 @@ Date created: October 8th, 2020
 Date modified: June 27th, 2023
 """
 
-import sys
 import logging
-
+import sqlite3
+import sys
 from os.path import expanduser
 
-from imessage_reader import common, create_sqlite, write_excel, data_container
-
+from imessage_reader import export_excel, export_sqlite, message, platform_finder
 
 # logging.basicConfig(level=logging.DEBUG)
 logging.basicConfig(level=logging.INFO)
 
 
+def fetch_db_data(db, command) -> list:
+    """Send queries to the sqlite database and return the results.
+
+    :param db: the path to the database
+    :param command: the SQL command
+    :return: data from the database
+    """
+    try:
+        conn = sqlite3.connect(db)
+        cur = conn.cursor()
+        cur.execute(command)
+        return cur.fetchall()
+    except Exception as e:
+        sys.exit(f"Error reading the database: {e}")
+
+
 # noinspection PyMethodMayBeStatic
-class FetchData:
+class DataFetcher:
     """
     This class contains the methods to fetch,
     print and export the messages.
     """
 
-    # The SQL command
     SQL_CMD = (
         "SELECT "
         "text, "
@@ -51,10 +65,9 @@ class FetchData:
         """
         self.db_path = db_path
         if system is None:
-            self.operating_system = common.get_platform()
+            self.operating_system = platform_finder.get_platform()
 
-    def _check_system(self):
-        # TODO: Change this later
+    def _check_supported_os(self):
         if self.operating_system == "WINDOWS":
             sys.exit("Your operating system is not supported yet!")
 
@@ -64,7 +77,7 @@ class FetchData:
         :return: list containing the user id, messages, the service and the account
         """
 
-        rval = common.fetch_db_data(self.db_path, self.SQL_CMD)
+        rval = fetch_db_data(self.db_path, self.SQL_CMD)
 
         data = []
         for row in rval:
@@ -96,13 +109,11 @@ class FetchData:
                     print(e)
                     sys.exit("ERROR: Can't read a message.")
 
-            data.append(
-                data_container.MessageData(row[2], text, row[1], row[3], row[4], row[5])
-            )
+            data.append(message.Message(row[2], text, row[1], row[3], row[4], row[5]))
 
         return data
 
-    def show_user_txt(self, export: str):
+    def export(self, format: str):
         """Invoke _read_database(), print fetched data and export data.
         (This method is for CLI usage.)
 
@@ -110,26 +121,26 @@ class FetchData:
         """
 
         # Check the running operating system
-        self._check_system()
+        self._check_supported_os()
 
         # Read chat.db
         fetched_data = self._read_database()
 
         # CLI output
-        if export == "nothing":
+        if format == "nothing":
             for data in fetched_data:
                 print(data)
 
         # Excel export
-        if export == "excel":
+        if format == "excel":
             self._export_excel(fetched_data)
 
         # SQLite3 export
-        if export == "sqlite":
+        if format == "sqlite":
             self._export_sqlite(fetched_data)
 
         # Show all recipients
-        if export == "recipients":
+        if format == "recipients":
             self._get_recipients()
 
     def _export_excel(self, data: list):
@@ -139,7 +150,7 @@ class FetchData:
         """
         file_path = expanduser("~") + "/Documents/"
         # TODO: Exception handling
-        ew = write_excel.ExelWriter(data, file_path)
+        ew = export_excel.ExcelExporter(data, file_path)
         ew.write_data()
 
     def _export_sqlite(self, data: list):
@@ -149,7 +160,7 @@ class FetchData:
         """
         file_path = expanduser("~") + "/Documents/"
         # TODO: Exception handling
-        cd = create_sqlite.CreateDatabase(data, file_path)
+        cd = export_sqlite.SqliteExporter(data, file_path)
         cd.create_sqlite_db()
 
     def _get_recipients(self):
@@ -192,6 +203,4 @@ class FetchData:
             account.append(data.account)
             is_from_me.append(data.is_from_me)
 
-        data = list(zip(users, messages, dates, service, account, is_from_me))
-
-        return data
+        return list(zip(users, messages, dates, service, account, is_from_me))

@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import pytest
-from datetime import datetime
+from datetime import datetime, UTC
 from os import scandir
-from imessage_reader.write_excel import ExelWriter
-from imessage_reader.data_container import MessageData
+from imessage_reader.export_excel import ExcelExporter
+from imessage_reader.message import Message
 
 
 @pytest.fixture()
@@ -16,7 +16,7 @@ def create_directory(tmpdir):
 
 def message_data_one_row():
     message_data_list = [
-        MessageData(
+        Message(
             user_id="max.mustermann@icloud.com",
             text="Hello!",
             date="2020-10-27 17:19:20",
@@ -28,9 +28,9 @@ def message_data_one_row():
     return message_data_list
 
 
-def test_write_excel(create_directory):
+def test_export_excel(create_directory):
     excel_file_path = create_directory + "/sub"
-    ew = ExelWriter(message_data_one_row(), excel_file_path)
+    ew = ExcelExporter(message_data_one_row(), excel_file_path)
     ew.write_data()
 
     file_name = ""

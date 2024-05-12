@@ -13,7 +13,7 @@ import openpyxl
 from openpyxl.styles import Font
 
 
-class ExelWriter:
+class ExcelExporter:
     """This class manages the export to excel."""
 
     def __init__(self, imessage_data: list, file_path: str):
@@ -112,16 +112,13 @@ class ExelWriter:
             sheet.cell(row=is_from_me_row, column=6).value = from_me
             is_from_me_row += 1
 
-        # Save the workbook (Excel file)
+        # Save the workbook
         try:
-            workbook.save(
-                self.file_path
-                + f'iMessage-Data_{datetime.now().strftime("%Y-%m-%d")}.xlsx'
-            )
+            filename = f'iMessage-Data_{datetime.now().strftime("%Y-%m-%d")}.xlsx'
+            workbook.save(self.file_path + filename)
             print()
-            print(">>> Excel file successfully created! <<<")
-            print("You find the Excel file in your Documents folder.")
+            print(f"Successfully created\n{self.file_path}{filename}")
             print()
         except IOError as e:
-            print(">>> Cannot write Excel file! <<<")
+            print("Cannot export Excel file")
             print(e)

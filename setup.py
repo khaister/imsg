@@ -1,8 +1,8 @@
 import io
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-from imessage_reader import common
+from imessage_reader import constants
 
 with io.open("README.md", "rt", encoding="utf8") as f:
     LONG_DESC = f.read()
@@ -10,25 +10,22 @@ with io.open("README.md", "rt", encoding="utf8") as f:
 
 setup(
     name="imessage_reader",
-    version=common.VERSION,
+    version=constants.VERSION,
     license="MIT",
-    description="Fetch recipients and chat messages from the chat.db database.",
+    description="A library for reading iMessage data",
     long_description=LONG_DESC,
     long_description_content_type="text/markdown",
-    author="Bodo Schönfeld",
+    author="Khai Nguyen, Bodo Schönfeld",
     author_email="bodo.schoenfeld@niftycode.de",
-    url="https://github.com/niftycode/imessage_reader",
+    url="https://github.com/khaister/imsg",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
     ],
     packages=find_packages(exclude=("tests", "docs")),
-    python_requires=">=3.8",
+    python_requires=">=3.12",
     entry_points={
         "console_scripts": ["imessage_reader=imessage_reader.cli:main"],
     },

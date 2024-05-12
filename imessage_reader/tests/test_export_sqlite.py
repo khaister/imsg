@@ -3,8 +3,8 @@
 
 import pytest
 from os import scandir
-from imessage_reader.create_sqlite import CreateDatabase
-from imessage_reader.data_container import MessageData
+from imessage_reader.export_sqlite import SqliteExporter
+from imessage_reader.message import Message
 
 
 @pytest.fixture()
@@ -15,7 +15,7 @@ def create_directory(tmpdir):
 
 def message_data_one_row():
     message_data_list = [
-        MessageData(
+        Message(
             user_id="max.mustermann@icloud.com",
             text="Hello Max!",
             date="2021-04-11 17:02:34",
@@ -27,9 +27,9 @@ def message_data_one_row():
     return message_data_list
 
 
-def test_create_sqlite(create_directory):
+def test_export_sqlite(create_directory):
     db_file_path = create_directory + "/db-"
-    test_database = CreateDatabase(message_data_one_row(), db_file_path)
+    test_database = SqliteExporter(message_data_one_row(), db_file_path)
     test_database.create_sqlite_db()
 
     file_name = ""

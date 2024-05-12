@@ -1,6 +1,6 @@
 .DS_Store
 /.vscode
-/imessage_reader/__pycache__
+**/__pycache__
 imessage_reader.egg-info/
 /.idea
 identifier.sqlite
@@ -11,3 +11,5 @@ build/
 
 *.pyc
 /htmlcov
+
+.ruff_cache

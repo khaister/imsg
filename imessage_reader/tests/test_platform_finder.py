@@ -3,7 +3,7 @@
 
 import pytest
 import platform
-from imessage_reader import common
+from imessage_reader import platform_finder
 
 
 @pytest.fixture(scope="function")
@@ -18,6 +18,6 @@ def get_os():
 
 
 def test_get_platform(get_os):
-    current_os = common.get_platform()
+    current_os = platform_finder.get_platform()
     expected_os = get_os
     assert current_os == expected_os
