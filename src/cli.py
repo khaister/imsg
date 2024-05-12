@@ -8,7 +8,7 @@ from os.path import expanduser
 
 from rich.console import Console
 
-from src import data_access, export_excel, export_sqlite, version
+from src import data_access, export_csv, export_sqlite, version
 
 # Default path to chat.db on macOS
 MACOS_DB_PATH = expanduser("~") + "/Library/Messages/chat.db"
@@ -30,7 +30,7 @@ def get_parser():
         "--export",
         nargs="?",
         default=None,
-        help="export to file with format (one of: 'e', 'excel', 's', 'sqlite', 'sqlite3')",
+        help="export to file with format (one of: 'c', 'csv', 's', 'sqlite')",
     )
     parser.add_argument(
         "-s",
@@ -85,9 +85,9 @@ def evaluate(console: Console, database: str, options):
     )
 
     output = options.export
-    if output in ["e", "excel"]:
+    if output in ["c", "csv"]:
         file_path = expanduser("~") + "/Documents/"
-        filename = export_excel.ExcelExporter(fetched_data, file_path).export()
+        filename = export_csv.CsvExporter(fetched_data, file_path).export()
         console.print(f"Successfully created {filename}")
         sys.exit()
 

@@ -2,7 +2,7 @@
 
 ![](img/license.svg) ![](img/python.svg)
 
-A utility for fetching data from iMessage on **macOS** (version 10.14 or above).
+A utility for fetching data from iMessage on macOS (version 10.14 or above).
 
 The following information is currently being read from the database:
 
@@ -22,7 +22,6 @@ Messages (iMessage or SMS) and attachments are stored in `~/Library/Messages` on
 ## Requirements
 
 * Python 3.12+
-* [openpyxl](https://pypi.org/project/openpyxl/)
 * [rich](https://rich.readthedocs.io/en/latest/)
 
 ## Install

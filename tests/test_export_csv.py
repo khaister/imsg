@@ -4,7 +4,7 @@
 import pytest
 from datetime import datetime, UTC
 from os import scandir
-from src.export_excel import ExcelExporter
+from src.export_csv import CsvExporter
 from src.message import Message
 
 
@@ -28,9 +28,9 @@ def message_data_one_row():
     return message_data_list
 
 
-def test_export_excel(create_directory):
-    excel_file_path = create_directory + "/sub"
-    ew = ExcelExporter(message_data_one_row(), excel_file_path)
+def test_export_csv(create_directory):
+    file_path = create_directory + "/sub"
+    ew = CsvExporter(message_data_one_row(), file_path)
     ew.export()
 
     file_name = ""
@@ -40,7 +40,7 @@ def test_export_excel(create_directory):
             file_name = entry.name
 
     expected_file_name = (
-        "sub" + f'iMessage-Data_{datetime.now().strftime("%Y-%m-%d")}.xlsx'
+        "sub" + f'iMessage-Data_{datetime.now().strftime("%Y-%m-%d")}.csv'
     )
 
     assert len(create_directory.listdir()) == 1

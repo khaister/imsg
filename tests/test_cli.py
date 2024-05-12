@@ -27,11 +27,11 @@ def test_check_database_path(mocker):
             "--database",
             "~/Library/Messages/chat.db",
             "--export",
-            "excel",
+            "csv",
         ],
     )
 
     args = cli.get_parser().parse_args()
     assert args.database == "~/Library/Messages/chat.db"
-    assert args.export == "excel"
+    assert args.export == "csv"
     assert not args.version
