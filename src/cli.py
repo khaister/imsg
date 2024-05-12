@@ -18,7 +18,7 @@ def get_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "-f",
-        "--chat-db",
+        "--database",
         type=str,
         nargs="?",
         const=MACOS_DB_PATH,
@@ -31,11 +31,7 @@ def get_parser() -> argparse.ArgumentParser:
         "--export",
         nargs="?",
         default=None,
-        help="output format ('e', 'excel', 's', 'sqlite', 'sqlite3')",
-    )
-
-    parser.add_argument(
-        "-r", "--recipients", help="show message recipients", action="store_true"
+        help="export to file with format (one of: 'e', 'excel', 's', 'sqlite', 'sqlite3')",
     )
 
     parser.add_argument("-v", "--version", help="show version", action="store_true")
@@ -53,18 +49,12 @@ def check(chat_db: str):
     return chat_db
 
 
-def evaluate(path: str, output: str, recipients: bool, version: bool):
+def evaluate(database: str, output: str, version: bool):
     if version:
         info.app_info()
         sys.exit()
 
-    fetched_data = data_access.DataAccess(path).fetch()
-
-    if recipients:
-        recipients = [i.from_caller_id for i in fetched_data if not i.is_from_me]
-        for recipient in recipients:
-            print(recipient)
-        sys.exit()
+    fetched_data = data_access.DataAccess(database).fetch()
 
     if output in ["e", "excel"]:
         file_path = expanduser("~") + "/Documents/"
@@ -72,7 +62,7 @@ def evaluate(path: str, output: str, recipients: bool, version: bool):
         print(f"\nSuccessfully created {filename}\n")
         sys.exit()
 
-    if output in ["s", "sqlite", "sqlite3"]:
+    if output in ["s", "sqlite"]:
         file_path = expanduser("~") + "/Documents/"
         filename = export_sqlite.SqliteExporter(data, file_path).export()
         print(f"\nSuccessfully created {filename}\n")
@@ -84,9 +74,9 @@ def evaluate(path: str, output: str, recipients: bool, version: bool):
 
 def main():
     args = get_parser().parse_args()
-    db_path = check(args.chat_db)
-    print(f"Reading {db_path}\n")
-    evaluate(db_path, args.export, args.recipients, args.version)
+    database = check(args.database)
+    print(f"Reading {database}\n")
+    evaluate(database, args.export, args.version)
 
 
 if __name__ == "__main__":

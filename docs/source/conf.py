@@ -19,12 +19,12 @@ sys.setrecursionlimit(1500)
 
 # -- Project information -----------------------------------------------------
 
-project = "imessage_reader"
-copyright = "2020-2023, Bodo Schönfeld"
-author = "Bodo Schönfeld"
+project = "imsg"
+copyright = "2024, Khai Nguyen"
+author = "Khai Nguyen"
 
 # The full version, including alpha/beta/rc tags
-release = "0.5.1"
+release = "1.0.0"
 
 # -- General configuration ---------------------------------------------------
 

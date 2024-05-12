@@ -16,11 +16,9 @@ def create_parser():
 
 def test_evaluate(create_parser):
     args_version = create_parser.parse_args(["--version"])
-    args_recipients = create_parser.parse_args(["--recipients"])
     args_output = create_parser.parse_args(["--export"])
 
     assert args_version.version is True
-    assert args_recipients.recipients is True
     assert args_output.export is None
 
 
@@ -28,16 +26,15 @@ def test_check_database_path(mocker):
     mocker.patch(
         "sys.argv",
         [
-            "imessage_reader",
-            "--chat-db",
-            "/Users/johnappleseed/Documents",
+            "imsg",
+            "--database",
+            "~/Library/Messages/chat.db",
             "--export",
             "excel",
         ],
     )
 
     args = cli.get_parser().parse_args()
-    assert args.chat_db == "/Users/johnappleseed/Documents"
+    assert args.database == "~/Library/Messages/chat.db"
     assert args.export == "excel"
-    assert args.recipients is False
-    assert args.version is False
+    assert not args.version
