@@ -16,11 +16,11 @@ def create_directory(tmpdir):
 def message_data_one_row():
     message_data_list = [
         Message(
-            user_id="max.mustermann@icloud.com",
-            text="Hello Max!",
-            date="2021-04-11 17:02:34",
+            from_caller_id="max.mustermann@icloud.com",
+            content="Hello Max!",
+            sent_on="2021-04-11 17:02:34",
             service="iMessage",
-            account="+01 555 17172",
+            to_caller_id="+01 555 17172",
             is_from_me=1,
         )
     ]
@@ -30,7 +30,7 @@ def message_data_one_row():
 def test_export_sqlite(create_directory):
     db_file_path = create_directory + "/db-"
     test_database = SqliteExporter(message_data_one_row(), db_file_path)
-    test_database.create_sqlite_db()
+    test_database.export()
 
     file_name = ""
     dir_entries = scandir(create_directory)

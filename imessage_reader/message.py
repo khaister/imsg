@@ -18,11 +18,11 @@ class Message:
     user id, text, date, service and account (caller id).
     """
 
-    user_id: str
-    text: str
-    date: str
+    from_caller_id: str
+    content: str
+    sent_on: str
     service: str
-    account: str
+    to_caller_id: str
     is_from_me: int
 
     def __str__(self):
@@ -31,13 +31,11 @@ class Message:
         :return: the representation of this object
         """
         return (
-            f"user_id:\t\t{self.user_id}\n"
-            f"sent_on:\t\t{self.date}\n"
-            f"service:\t\t{self.service}\n"
-            f"caller_id:\t\t{self.account}\n"
+            f"from_caller_id:\t\t{self.from_caller_id}\n"
+            f"to_caller_id:\t\t{self.to_caller_id}\n"
             f"is_from_me:\t\t{self.is_from_me}\n"
+            f"sent_on:\t\t{self.sent_on}\n"
+            f"service:\t\t{self.service}\n"
             f"\n"
-            f"{self.text}\n"
-            f"\n"
-            f"----------------------------------------------------------------\n"
+            f"{self.content}\n"
         )

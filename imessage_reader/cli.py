@@ -1,20 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-cli.py
-Entrypoint to the command line interface.
-Python 3.9+
-Date created: October 15th, 2020
-Date modified: June 2nd, 2023
-"""
-
 import argparse
 import os
 import sys
 from os.path import expanduser
 
-from imessage_reader import data_access, info
+from imessage_reader import data_access, export_excel, export_sqlite, info
 
 # Path to the chat.db file on macOS
 # Note: This path is used if the user does not specify a path.
@@ -38,7 +30,7 @@ def get_parser() -> argparse.ArgumentParser:
         "-e",
         "--export",
         nargs="?",
-        default="nothing",
+        default=None,
         help="output format ('e', 'excel', 's', 'sqlite', 'sqlite3')",
     )
 
@@ -62,35 +54,38 @@ def check(chat_db: str):
 
 
 def evaluate(path: str, output: str, recipients: bool, version: bool):
-    """Evaluate the given options and perform the appropriate actions.
-
-    :param path: path to the chat.db file
-    :param output: create an Excel/SQLite3 file
-    :param recipients: recipients of the messages
-    :param version: specify if the version of this program should be shown
-    """
-    data_fetcher = data_access.DataFetcher(path)
-
     if version:
         info.app_info()
         sys.exit()
 
+    fetched_data = data_access.DataAccess(path).fetch()
+
     if recipients:
-        data_fetcher.export("recipients")
+        recipients = [i.from_caller_id for i in fetched_data if not i.is_from_me]
+        for recipient in recipients:
+            print(recipient)
         sys.exit()
 
-    if output == "e" or output == "excel":
-        data_fetcher.export("excel")
-    elif output == "s" or output == "sqlite" or output == "sqlite3":
-        data_fetcher.export("sqlite")
-    else:
-        data_fetcher.export("nothing")
+    if output in ["e", "excel"]:
+        file_path = expanduser("~") + "/Documents/"
+        filename = export_excel.ExcelExporter(data, file_path).export()
+        print(f"\nSuccessfully created {filename}\n")
+        sys.exit()
+
+    if output in ["s", "sqlite", "sqlite3"]:
+        file_path = expanduser("~") + "/Documents/"
+        filename = export_sqlite.SqliteExporter(data, file_path).export()
+        print(f"\nSuccessfully created {filename}\n")
+        sys.exit()
+
+    for data in fetched_data:
+        print(data)
 
 
 def main():
     args = get_parser().parse_args()
     db_path = check(args.chat_db)
-    print(f"Reading {db_path}")
+    print(f"Reading {db_path}\n")
     evaluate(db_path, args.export, args.recipients, args.version)
 
 

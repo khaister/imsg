@@ -17,11 +17,11 @@ def create_directory(tmpdir):
 def message_data_one_row():
     message_data_list = [
         Message(
-            user_id="max.mustermann@icloud.com",
-            text="Hello!",
-            date="2020-10-27 17:19:20",
+            from_caller_id="max.mustermann@icloud.com",
+            content="Hello!",
+            sent_on="2020-10-27 17:19:20",
             service="SMS",
-            account="+01 555 17172",
+            to_caller_id="+01 555 17172",
             is_from_me=1,
         )
     ]
@@ -31,7 +31,7 @@ def message_data_one_row():
 def test_export_excel(create_directory):
     excel_file_path = create_directory + "/sub"
     ew = ExcelExporter(message_data_one_row(), excel_file_path)
-    ew.write_data()
+    ew.export()
 
     file_name = ""
     dir_entries = scandir(create_directory)

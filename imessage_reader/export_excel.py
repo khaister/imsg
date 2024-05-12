@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
 
-"""
-Write Excel file containing iMessage data (user id, text, date, service, account)
-Python 3.9+
-Date created: October 1st, 2020
-Date modified: August 28th, 2021
-"""
-
 from datetime import datetime
 
 import openpyxl
@@ -14,23 +7,11 @@ from openpyxl.styles import Font
 
 
 class ExcelExporter:
-    """This class manages the export to excel."""
-
     def __init__(self, imessage_data: list, file_path: str):
-        """Constructor method
-
-        :param imessage_data: list with MessageData objects
-                containing user id, text, date, service and account
-        :param file_path: path to the location of the Excel file
-        """
         self.imessage_data = imessage_data
         self.file_path = file_path
 
-    def write_data(self):
-        """Write data to Excel
-        (user id, text, date, service, account, is_from_me)
-        """
-
+    def export(self) -> str:
         users = []
         messages = []
         dates = []
@@ -39,11 +20,11 @@ class ExcelExporter:
         is_from_me = []
 
         for data in self.imessage_data:
-            users.append(data.user_id)
-            messages.append(data.text)
-            dates.append(data.date)
+            users.append(data.from_caller_id)
+            messages.append(data.content)
+            dates.append(data.sent_on)
             services.append(data.service)
-            accounts.append(data.account)
+            accounts.append(data.to_caller_id)
             is_from_me.append(data.is_from_me)
 
         # Call openpyxl.Workbook() to create a new blank Excel workbook
@@ -113,12 +94,8 @@ class ExcelExporter:
             is_from_me_row += 1
 
         # Save the workbook
-        try:
-            filename = f'iMessage-Data_{datetime.now().strftime("%Y-%m-%d")}.xlsx'
-            workbook.save(self.file_path + filename)
-            print()
-            print(f"Successfully created\n{self.file_path}{filename}")
-            print()
-        except IOError as e:
-            print("Cannot export Excel file")
-            print(e)
+        filename = (
+            f'{self.file_path}iMessage-Data_{datetime.now().strftime("%Y-%m-%d")}.xlsx'
+        )
+        workbook.save(filename)
+        return filename

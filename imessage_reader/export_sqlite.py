@@ -12,19 +12,11 @@ import sqlite3
 
 
 class SqliteExporter:
-    """This class manages the export to SQLite."""
-
     def __init__(self, imessage_data: list, file_path: str):
-        """Constructor method
-
-        :param imessage_data: list with MessageData objects
-                containing user id, text, date, service and account
-        :param file_path: the path to the location of the Excel file
-        """
         self.imessage_data = imessage_data
         self.file_path = file_path
 
-    def create_sqlite_db(self):
+    def export(self) -> str:
         """Create a SQLite3 database in the Desktop folder.
         Add user, text, date and service to the database.
         """
@@ -37,32 +29,31 @@ class SqliteExporter:
 
         cur.execute(
             """
-        CREATE TABLE IF NOT EXISTS Messages (user_id TEXT,
-        message TEXT,
-        date TEXT,
-        service TEXT,
-        destination_caller_id TEXT,
-        is_from_me TEXT)"""
+            CREATE TABLE IF NOT EXISTS Messages (
+                from_caller_id TEXT,
+                to_caller_id TEXT,
+                is_from_me INTEGER,
+                content TEXT,
+                sent_on TEXT,
+                service TEXT
+            )
+            """
         )
 
         for data in self.imessage_data:
             cur.execute(
-                """INSERT INTO Messages (user_id, message, date, service, destination_caller_id, is_from_me)
+                """INSERT INTO Messages (from_caller_id, to_caller_id, is_from_me, content, sent_on, service)
                 VALUES(?, ?, ?, ?, ?, ?)""",
                 (
-                    data.user_id,
-                    data.text,
-                    data.date,
-                    data.service,
-                    data.account,
+                    data.from_caller_id,
+                    data.to_caller_id,
                     data.is_from_me,
+                    data.content,
+                    data.sent_on,
+                    data.service,
                 ),
             )
 
         conn.commit()
         cur.close()
-
-        print()
-        print(">>> SQLite database successfully created! <<<")
-        print("You find the Database in your Documents folder.")
-        print()
+        return database
