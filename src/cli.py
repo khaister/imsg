@@ -6,6 +6,8 @@ import os
 import sys
 from os.path import expanduser
 
+from rich.console import Console
+
 from src import data_access, export_excel, export_sqlite, version
 
 # Default path to chat.db on macOS
@@ -73,7 +75,7 @@ def check(database: str):
     return database
 
 
-def evaluate(database: str, options):
+def evaluate(console: Console, database: str, options):
     fetched_data = data_access.DataAccess(database).fetch(
         start=options.start,
         end=options.end,
@@ -85,30 +87,34 @@ def evaluate(database: str, options):
     output = options.export
     if output in ["e", "excel"]:
         file_path = expanduser("~") + "/Documents/"
-        filename = export_excel.ExcelExporter(data, file_path).export()
-        print(f"\nSuccessfully created {filename}\n")
+        filename = export_excel.ExcelExporter(fetched_data, file_path).export()
+        console.print(f"Successfully created {filename}")
         sys.exit()
 
     if output in ["s", "sqlite"]:
         file_path = expanduser("~") + "/Documents/"
-        filename = export_sqlite.SqliteExporter(data, file_path).export()
-        print(f"\nSuccessfully created {filename}\n")
+        filename = export_sqlite.SqliteExporter(fetched_data, file_path).export()
+        console.print(f"Successfully created {filename}")
         sys.exit()
 
+    # Default output to stdout
+    console.print()
     for data in fetched_data:
-        print(data)
+        console.print(data)
 
 
 def main():
+    console = Console()
+
     args = get_parser().parse_args()
     if args.version:
-        print(version.STABLE)
+        console.print(version.STABLE)
         sys.exit()
 
     database = check(args.database)
-    print(f"Reading {database}\n")
+    console.print(f"Reading {database}")
 
-    evaluate(database, args)
+    evaluate(console, database, args)
 
 
 if __name__ == "__main__":

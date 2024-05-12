@@ -23,6 +23,7 @@ Messages (iMessage or SMS) and attachments are stored in `~/Library/Messages` on
 
 * Python 3.12+
 * [openpyxl](https://pypi.org/project/openpyxl/)
+* [rich](https://rich.readthedocs.io/en/latest/)
 
 ## Install
 
