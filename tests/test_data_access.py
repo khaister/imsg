@@ -15,8 +15,7 @@ def test_fetch_data(mocker):
         db_path="/Users/bodo/Documents",
         system=None,
     )
-    input_path = data.db_path
-    input_system = data.operating_system
+    input_path = data._database
     assert input_path == "/Users/bodo/Documents"
     assert not None
 
@@ -52,6 +51,6 @@ def initialize_db(tmpdir):
 
 def test_fetch_db_data(initialize_db):
     sql_command = "SELECT ROWID, id from handle"
-    rval = data_access.fetch_db_data(initialize_db, sql_command)
+    rval = data_access.DataAccess(initialize_db)._do_fetch(sql_command)
     assert isinstance(rval, object)
     assert rval == [(8, "max@mustermann.de")]

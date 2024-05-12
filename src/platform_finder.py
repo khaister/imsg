@@ -6,8 +6,6 @@ from enum import Enum
 
 
 class Platform(Enum):
-    """An enum used to indicate the running operating system"""
-
     OTHER = 0
     LINUX = 1
     MAC = 2

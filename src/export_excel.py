@@ -5,6 +5,8 @@ from datetime import datetime
 import openpyxl
 from openpyxl.styles import Font
 
+from src.message import Message
+
 
 class ExcelExporter:
     def __init__(self, imessage_data: list, file_path: str):
@@ -20,11 +22,12 @@ class ExcelExporter:
         is_from_me = []
 
         for data in self.imessage_data:
-            users.append(data.from_caller_id)
+            data: Message
+            users.append(data.sender)
             messages.append(data.content)
-            dates.append(data.sent_on)
+            dates.append(data.sent_at)
             services.append(data.service)
-            accounts.append(data.to_caller_id)
+            accounts.append(data.recipient)
             is_from_me.append(data.is_from_me)
 
         # Call openpyxl.Workbook() to create a new blank Excel workbook

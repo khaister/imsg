@@ -7,9 +7,6 @@ from src import cli
 
 @pytest.fixture()
 def create_parser():
-    """
-    Create a parser
-    """
     parser = cli.get_parser()
     yield parser
 

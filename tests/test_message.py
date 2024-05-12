@@ -11,12 +11,12 @@ from src.message import Message
 @pytest.fixture()
 def message_data_one_row():
     return Message(
-        "max.mustermann@icloud.com",
-        "Hello!",
-        "2020-10-27 17:19:20",
-        "SMS",
-        "+01 555 17172",
-        1,
+        sender="max.mustermann@icloud.com",
+        content="Hello!",
+        sent_at="2020-10-27 17:19:20",
+        service="SMS",
+        recipient="+01 555 17172",
+        is_from_me=False,
     )
 
 
@@ -28,19 +28,19 @@ def initialize_db(tmpdir):
 
     cur.executescript(
         """
-    DROP TABLE IF EXISTS message;
+        DROP TABLE IF EXISTS message;
 
-    CREATE TABLE message (
-    user_id                 TEXT UNIQUE,
-    text                    TEXT UNIQUE,
-    date                    TEXT UNIQUE,
-    service                 TEXT UNIQUE,
-    account                 TEXT UNIQUE,
-    is_from_me              INTEGER,
-    attributedBody          BLOB,
-    cache_has_attachments   INTEGER
-    );
-    """
+        CREATE TABLE message (
+            user_id                 TEXT UNIQUE,
+            text                    TEXT UNIQUE,
+            date                    TEXT UNIQUE,
+            service                 TEXT UNIQUE,
+            account                 TEXT UNIQUE,
+            is_from_me              INTEGER,
+            attributedBody          BLOB,
+            cache_has_attachments   INTEGER
+        );
+        """
     )
 
     cur.execute(
@@ -77,7 +77,7 @@ def test_message_data(message_data_one_row):
 
 def test_db_data(initialize_db):
     sql_command = "SELECT user_id, text, date, service, account, is_from_me, attributedBody, cache_has_attachments from message"
-    rval = data_access.fetch_db_data(initialize_db, sql_command)
+    rval = data_access.DataAccess(initialize_db)._do_fetch(sql_command)
     assert isinstance(rval, list)
     assert isinstance(rval[0][0], str)
     assert isinstance(rval[0][1], str)

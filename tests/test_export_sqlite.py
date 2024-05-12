@@ -16,12 +16,12 @@ def create_directory(tmpdir):
 def message_data_one_row():
     message_data_list = [
         Message(
-            from_caller_id="max.mustermann@icloud.com",
+            sender="max.mustermann@icloud.com",
             content="Hello Max!",
-            sent_on="2021-04-11 17:02:34",
+            sent_at="2021-04-11 17:02:34",
             service="iMessage",
-            to_caller_id="+01 555 17172",
-            is_from_me=1,
+            recipient="+01 555 17172",
+            is_from_me=True,
         )
     ]
     return message_data_list

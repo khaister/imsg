@@ -6,10 +6,9 @@ import os
 import sys
 from os.path import expanduser
 
-from src import data_access, export_excel, export_sqlite, info
+from src import data_access, export_excel, export_sqlite, version
 
-# Path to the chat.db file on macOS
-# Note: This path is used if the user does not specify a path.
+# Default path to chat.db on macOS
 MACOS_DB_PATH = expanduser("~") + "/Library/Messages/chat.db"
 
 
@@ -49,11 +48,7 @@ def check(chat_db: str):
     return chat_db
 
 
-def evaluate(database: str, output: str, version: bool):
-    if version:
-        info.app_info()
-        sys.exit()
-
+def evaluate(database: str, output: str):
     fetched_data = data_access.DataAccess(database).fetch()
 
     if output in ["e", "excel"]:
@@ -74,9 +69,14 @@ def evaluate(database: str, output: str, version: bool):
 
 def main():
     args = get_parser().parse_args()
+    if args.version:
+        print(version.STABLE)
+        sys.exit()
+
     database = check(args.database)
     print(f"Reading {database}\n")
-    evaluate(database, args.export, args.version)
+
+    evaluate(database, args.export)
 
 
 if __name__ == "__main__":
