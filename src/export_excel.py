@@ -28,33 +28,27 @@ class ExcelExporter:
             dates.append(data.sent_at)
             services.append(data.service)
             accounts.append(data.recipient)
-            is_from_me.append(data.is_from_me)
+            is_from_me.append("yes" if data.is_from_me else "no")
 
-        # Call openpyxl.Workbook() to create a new blank Excel workbook
         workbook = openpyxl.Workbook()
-
-        # Activate a sheet
         sheet = workbook.active
-
-        # Set a title
         sheet.title = "iMessages"
 
-        # Set headline style
         bold16font = Font(size=16, bold=True)
 
-        sheet["A1"] = "User ID"
+        sheet["A1"] = "Sender"
         sheet["A1"].font = bold16font
 
         sheet["B1"] = "Message"
         sheet["B1"].font = bold16font
 
-        sheet["C1"] = "Date"
+        sheet["C1"] = "Timestamp"
         sheet["C1"].font = bold16font
 
         sheet["D1"] = "Service"
         sheet["D1"].font = bold16font
 
-        sheet["E1"] = "Destination Caller ID"
+        sheet["E1"] = "Recipient"
         sheet["E1"].font = bold16font
 
         sheet["F1"] = "Is From Me"
