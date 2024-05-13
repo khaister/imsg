@@ -16,6 +16,7 @@ def create_directory(tmpdir):
 def message_data_one_row():
     message_data_list = [
         Message(
+            id=1,
             sender="max.mustermann@icloud.com",
             content="Hello Max!",
             sent_at="2021-04-11 17:02:34",

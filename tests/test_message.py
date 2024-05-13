@@ -11,6 +11,7 @@ from src.message import Message
 @pytest.fixture()
 def message_data_one_row():
     return Message(
+        id=1,
         sender="max.mustermann@icloud.com",
         content="Hello!",
         sent_at="2020-10-27 17:19:20",
@@ -44,15 +45,18 @@ def initialize_db(tmpdir):
     )
 
     cur.execute(
-        """INSERT OR IGNORE INTO message(user_id,
-                                        text,
-                                        date,
-                                        service,
-                                        account,
-                                        is_from_me,
-                                        attributedBody,
-                                        cache_has_attachments)
-        VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)""",
+        """
+        INSERT OR IGNORE INTO message (
+            user_id,
+            text,
+            date,
+            service,
+            account,
+            is_from_me,
+            attributedBody,
+            cache_has_attachments
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
         (
             "max@mustermann.de",
             "Hello Kendra!",

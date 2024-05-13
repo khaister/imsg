@@ -3,25 +3,26 @@
 import logging
 import sqlite3
 import sys
+from datetime import datetime, UTC
 from os.path import expanduser
 
 from src import message, platform_finder
 
-logging.basicConfig(level=logging.INFO)
+_logger = logging.getLogger(__name__)
 
 
-# noinspection PyMethodMayBeStatic
 class DataAccess:
     _QUERY = """
     SELECT
         m.text,
-        datetime((m.date / 1000000000) + 978307200, 'unixepoch', 'localtime'),
+        datetime((m.date / 1000000000) + 978307200, 'unixepoch'),
         h.id,
         h.service,
         m.destination_caller_id,
         m.is_from_me,
         m.attributedBody,
-        m.cache_has_attachments
+        m.cache_has_attachments,
+        m.rowid
     FROM message m
     JOIN handle h ON m.handle_id = h.ROWID
     """
@@ -87,11 +88,14 @@ class DataAccess:
             content = self._parse_content(row)
             data.append(
                 message.Message(
+                    id=row[8],
                     sender=row[2],
                     recipient=row[4],
                     is_from_me=bool(row[5]),
                     content=content,
-                    sent_at=row[1],
+                    sent_at=datetime.strptime(row[1], "%Y-%m-%d %H:%M:%S")
+                    .replace(tzinfo=UTC)
+                    .astimezone(),
                     service=row[3],
                 )
             )
@@ -122,8 +126,8 @@ class DataAccess:
                     content = content[1 : length + 1]
 
                 content = content.decode()
-                logging.debug(content)
+                _logger.debug(content)
             except Exception as e:
-                logging.debug(e)
+                _logger.debug(e)
                 sys.exit(str(e))
         return content
